@@ -29,7 +29,7 @@
             <img :alt="$t('navbar.logo')" id="logo" :src="'/' + tenant + '/img/logos/kf_logo.png'">
           </b-container>
           <hr>
-          <b-row class="social-media">
+          <b-row v-if="tenant === 'sh'" class="social-media">
             <a href="https://www.facebook.com/kultursphaere" target="_blank">
               <b-col class="social">
                 <img :alt="$t('common.facebook')" src="@/assets/images/icons/social-media/facebook.svg">
@@ -268,8 +268,9 @@
               {{ $t('about.accessibility.currentStatus') }}
             </p>
             <ul>
-              <li>{{ $t('about.accessibility.faults.0') }}</li>
-              <li>{{ $t('about.accessibility.faults.1') }}</li>
+              <li v-for="(fault, key) in $t('about.accessibility.faults', {}, { returnObjects: true })" :key="key">
+                {{ fault }}
+              </li>
             </ul>
             <p>
               {{ $t('about.accessibility.correcting') }}
@@ -300,15 +301,40 @@
 
 <script>
 import KsHeader from '@/components/layout/Header.vue'
-import ScrollPosition from '@/mixins/scrollposition'
 import i18n from '@/i18n'
+import ScrollPosition from '@/mixins/scrollposition'
 
 export default {
   name: 'About',
   data() {
     return {
-      analyticsConsent: false,
-      partners: [
+      analyticsConsent: false
+    }
+  },
+  mounted() {
+    const checkConsentCookie = this.getCookie('CookieConsent')
+    this.analyticsConsent = checkConsentCookie !== 'false'
+  },
+  computed: {
+    matomoActive: function () { return process.env.VUE_APP_MATOMO === 'true' },
+    appURL: function () { return process.env.VUE_APP_URL },
+    appName: function () { return process.env.VUE_APP_NAME },
+    appDescription: function () { return process.env.VUE_APP_DESCRIPTION },
+    appKeywords: function () { return process.env.VUE_APP_KEYWORDS },
+    tenant: function () { return process.env.VUE_APP_TENANT },
+    locale: function () { return i18n.locale },
+    partners() {
+      const dataport = {
+        name: 'Dataport',
+        src: require('@/assets/images/logos/logo_dataport.png'),
+        small: false,
+        class: 'px-4',
+        link: 'https://www.dataport.de/'
+      }
+      if (this.tenant === 'hb') {
+        return [dataport]
+      }
+      return [
         {
           name: 'Fachhochschule Kiel',
           src: require('@/assets/images/logos/logo_fh-kiel.png'),
@@ -330,13 +356,7 @@ export default {
           class: '',
           link: 'https://www.digicult-verbund.de/'
         },
-        {
-          name: 'Dataport',
-          src: require('@/assets/images/logos/logo_dataport.png'),
-          small: false,
-          class: 'px-4',
-          link: 'https://www.dataport.de/'
-        },
+        dataport,
         {
           name: 'Museumsverband',
           src: require('@/assets/images/logos/logo_museumsverband.png'),
@@ -346,19 +366,6 @@ export default {
         }
       ]
     }
-  },
-  mounted() {
-    const checkConsentCookie = this.getCookie('CookieConsent')
-    this.analyticsConsent = checkConsentCookie !== 'false'
-  },
-  computed: {
-    matomoActive: function () { return process.env.VUE_APP_MATOMO === 'true' },
-    appURL: function () { return process.env.VUE_APP_URL },
-    appName: function () { return process.env.VUE_APP_NAME },
-    appDescription: function () { return process.env.VUE_APP_DESCRIPTION },
-    appKeywords: function () { return process.env.VUE_APP_KEYWORDS },
-    tenant: function () { return process.env.VUE_APP_TENANT },
-    locale: function () { return i18n.locale }
   },
   methods: {
     changeAnalyticsConsent() {

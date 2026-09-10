@@ -1,13 +1,19 @@
+const path = require('path')
 module.exports = {
   css: {
     loaderOptions: {
       scss: {
-        prependData: `@import "@/styles/variables.scss";`
+        prependData: `@import "@styles/variables.scss";`
       }
     }
   },
   configureWebpack: {
-    devtool: process.env.NODE_ENV !== 'production' ? 'eval-source-map' : ''
+    devtool: process.env.NODE_ENV !== 'production' ? 'eval-source-map' : false,
+    resolve: {
+      alias: {
+        '@styles': path.resolve(__dirname, 'src/styles')
+      }
+    }
   },
   productionSourceMap: process.env.NODE_ENV !== 'production',
   pluginOptions: {
@@ -138,6 +144,20 @@ module.exports = {
           src: process.env.VUE_APP_TENANT + '/img/icons/app-icon-1024x1024.png',
           type: 'image/png',
           sizes: '1024x1024'
+        }
+      ],
+      "screenshots": [
+        {
+          "src": "/img/screenshots/home-mobile.png",
+          "sizes": "360x640",
+          "type": "image/png",
+          "form_factor": "narrow"  // for mobile
+        },
+        {
+          "src": "/img/screenshots/home-desktop.png",
+          "sizes": "1280x720",
+          "type": "image/png",
+          "form_factor": "wide"  // for desktop
         }
       ],
       start_url: '/',

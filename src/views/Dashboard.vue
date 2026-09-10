@@ -91,6 +91,14 @@
         <b-container class="ks-card-container pt-3 pb-2">
           <b-row class="justify-content-center">
             <ks-card
+              v-if="tenant === 'sh'"
+              :route="`/${$route.params.locale}/institutions/map?isFavorite=false`"
+              :text="$t('common.map')"
+              icon="IconBremenBremerhafen"
+              data-cy="mapCard"
+            />
+            <ks-card
+              v-if="tenant === 'hb'"
               :route="`/${$route.params.locale}/institutions/map?isFavorite=false`"
               :text="$t('common.map')"
               icon="IconBremenBremerhafen"
@@ -139,7 +147,7 @@
             <ks-card
               v-if="museumsCardEnabled && tenant === 'sh'"
               :route="`/${$route.params.locale}/museumscard`"
-              :image-source="require(`@/assets/images/logos/museumsCard2024greenBackground.png`)"
+              :image-source="require(`@/assets/images/logos/2026_museumscard_logo_jubiläum_blaubeige.png`)"
               :small="(tenant === 'sh')"
               :museumscard-small="true"
               data-cy="museumsCardKachel"
@@ -179,7 +187,7 @@
             </icon-base>
             {{ $t("common.downloadApp") }}
           </b-btn>
-          <b-btn
+          <!--pb-3b-btn
             variant="link"
             v-b-modal.sign-language-modal
             class="footer-text px-2 pt-0 pb-3 text-decoration-none"
@@ -194,7 +202,7 @@
             </icon-base>
             {{ $t("dashboard.signLanguage") }}
           </b-btn>
-          <sign-language-modal/>
+          <sign-language-modal/-->
           <router-link
             :to="`/${$route.params.locale}/about`"
             class="footer-text px-2 pt-0 pb-3"
@@ -216,17 +224,17 @@
 </template>
 
 <script>
-import KsList from '@/components/institutions/List.vue'
 import SearchBar from '@/components/common/SearchBar.vue'
-import KsCarousel from '@/components/dashboard/Carousel.vue'
 import KsCard from '@/components/dashboard/Card.vue'
+import KsCarousel from '@/components/dashboard/Carousel.vue'
+import KsList from '@/components/institutions/List.vue'
 import KsHeader from '@/components/layout/Header'
-import { mapGetters } from 'vuex'
-import LocaleChanger from '../components/dashboard/LocaleChanger'
-import SignLanguageModal from '../components/dashboard/SignLanguageModal.vue'
+import i18n from '@/i18n'
 import ScrollPosition from '@/mixins/scrollposition'
 import detectRTC from 'detectrtc'
-import i18n from '@/i18n'
+import { mapGetters } from 'vuex'
+import LocaleChanger from '../components/dashboard/LocaleChanger'
+// import SignLanguageModal from '../components/dashboard/SignLanguageModal.vue'
 
 export default {
   name: 'Dashboard',
@@ -247,8 +255,8 @@ export default {
     KsCard,
     KsHeader,
     SearchBar,
-    KsList,
-    SignLanguageModal
+    KsList
+    // SignLanguageModal
   },
   mixins: [ScrollPosition],
   computed: {
